@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6Rwin Avatar Prediction | ফ্রি সিগন্যাল</title>
+    <style>
+        :root {
+            --primary: #6a0dad;
+            --secondary: #ff5722;
+            --accent: #ffeb3b;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        .premium-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(to right, #ffeb3b, #ff9800);
+            color: var(--dark);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .main-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            text-align: center;
+        }
+        
+        .avatar-display {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .avatar-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(106, 13, 173, 0.6);
+            animation: rotateColors 10s linear infinite;
+        }
+        
+        @keyframes rotateColors {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        .avatar-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            z-index: 2;
+            border: 3px solid white;
+        }
+        
+        .prediction-text {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        
+        .highlight {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .cta-button {
+            display: block;
+            width: 80%;
+            max-width: 400px;
+            margin: 30px auto;
+            padding: 15px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(106, 13, 173, 0.4);
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(106, 13, 173, 0.6);
+        }
+        
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(to right, #00b4db, #0083b0);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .screenshot-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .screenshot-placeholder {
+            width: 100%;
+            max-width: 400px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+        }
+        
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .verification-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+        }
+        
+        .password-display {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            display: none;
+        }
+        
+        .signal-container {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .signal-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .signal-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--accent);
+        }
+        
+        .signal-title {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        
+        .signal-value {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+        
+        .steps-container {
+            margin-top: 40px;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .step-description {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .disclaimer {
+            background: rgba(255, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+        
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .language-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .language-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .language-btn.active {
+            background: var(--accent);
+            color: var(--dark);
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+            
+            .avatar-circle {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .avatar-image {
+                width: 135px;
+                height: 135px;
+            }
+            
+            .language-switcher {
+                top: 10px;
+                left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-switcher">
+        <button class="language-btn active" id="bnBtn">সুইচ বাংলা</button>
+        <button class="language-btn" id="enBtn">Switch English</button>
+    </div>
+    
+    <div class="container">
+        <header>
+            <div class="premium-badge">প্রিমিয়াম</div>
+            <div class="logo">6Rwin Avatar Predictor</div>
+            <div class="tagline">ম্যাক্সিমাম জয়ের জন্য AI-পাওয়ার্ড প্রেডিকশন টেকনোলজি</div>
+        </header>
+        
+        <div class="main-card">
+            <h2 class="card-title">ফ্রি অ্যাভাটার প্রেডিকশন <span class="ai-badge">AI ভেরিফাইড</span></h2>
+            
+            <div class="avatar-display">
+                <div class="avatar-circle">
+                    <img src="https://via.placeholder.com/180" alt="Avatar Prediction" class="avatar-image" id="avatarImg">
+                </div>
+            </div>
+            
+            <p class="prediction-text">
+                আমাদের উন্নত <span class="highlight">AI অ্যালগরিদম</span> হাজার হাজার ডেটা পয়েন্ট বিশ্লেষণ করে পরবর্তী জয়ী অ্যাভাটার <span class="highlight">92.7% নির্ভুলতার</span> সাথে ভবিষ্যদ্বাণী করে। এখনই আপনার ফ্রি প্রেডিকশন পান!
+            </p>
+            
+            <a href="#step1" class="cta-button" id="getPredictionBtn">ফ্রি অ্যাভাটার প্রেডিকশন পেতে এখানে ক্লিক করুন</a>
+            
+            <div class="disclaimer">
+                <strong>নোট:</strong> এটি একটি প্রিমিয়াম প্রেডিকশন সার্ভিস। গুণমান নিশ্চিত করতে এবং অপব্যবহার রোধ করতে, আমরা অ্যাকাউন্ট ভেরিফিকেশন প্রয়োজন। কোন পেমেন্ট প্রয়োজন নেই - আপনার ডিপোজিট আপনারই থাকে এবং যেকোনো সময় উত্তোলন করতে পারেন।
+            </div>
+        </div>
+        
+        <div class="main-card" id="step1" style="display: none;">
+            <h2 class="card-title">ধাপ ১: অ্যাকাউন্ট ভেরিফিকেশন</h2>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">১</div>
+                    <div class="step-content">
+                        <div class="step-title">আপনার 6Rwin অ্যাকাউন্ট তৈরি করুন</div>
+                        <div class="step-description">
+                            6Rwin অফিসিয়াল ওয়েবসাইট খুলতে নিচের বাটনে ক্লিক করুন এবং আপনার ফ্রি অ্যাকাউন্ট তৈরি করুন। এটি ২ মিনিটেরও কম সময় নেয়।
+                        </div>
+                        <a href="http://rich88.6rwin1.com/?referralCode=sxy0404" class="cta-button" style="width: 100%; max-width: 400px; margin: 15px auto; font-size: 1rem; padding: 12px;">6Rwin ওয়েবসাইট খুলুন</a>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">২</div>
+                    <div class="step-content">
+                        <div class="step-title">আপনার অ্যাকাউন্টে ১৬০০ টাকা ডিপোজিট করুন</div>
+                        <div class="step-description">
+                            আপনার নতুন 6Rwin অ্যাকাউন্টে ১৬০০ টাকা ডিপোজিট করুন। এই পরিমাণ আপনারই থাকে এবং যেকোনো সময় উত্তোলন করতে পারেন। সাহায্য প্রয়োজন হলে টিউটোরিয়ালটি দেখুন।
+                        </div>
+                        <a href="https://youtu.be/qapNIab_tOA?si=IXk_hvDA4ajmr47r" class="cta-button" style="width: 100%; max-width: 400px; margin: 15px auto; font-size: 1rem; padding: 12px;">ডিপোজিট টিউটোরিয়াল দেখুন</a>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">৩</div>
+                    <div class="step-content">
+                        <div class="step-title">ভেরিফিকেশনের জন্য স্ক্রিনশট আপলোড করুন</div>
+                        <div class="step-description">
+                            6Rwin অ্যাকাউন্টের একটি স্ক্রিনশট আপলোড করুন যেখানে কমপক্ষে ১৬০০ টাকা ব্যালেন্স দেখাচ্ছে। আমাদের AI তাৎক্ষণিকভাবে যাচাই করবে।
+                        </div>
+                        
+                        <div class="screenshot-container">
+                            <div class="screenshot-placeholder" id="screenshotPreview">
+                                আপনার স্ক্রিনশট এখানে ড্র্যাগ অ্যান্ড ড্রপ করুন বা সিলেক্ট করতে ক্লিক করুন
+                            </div>
+                            <input type="file" id="screenshotUpload" accept="image/*" style="display: none;">
+                            <button class="upload-btn" id="uploadBtn">স্ক্রিনশট আপলোড করুন</button>
+                        </div>
+                        
+                        <div class="verification-result" id="verificationResult"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-card" id="step2" style="display: none;">
+            <h2 class="card-title">ধাপ ২: আপনার প্রেডিকশন পাসওয়ার্ড পান</h2>
+            
+            <div class="prediction-text">
+                অভিনন্দন! আমাদের AI সিস্টেম দ্বারা আপনার অ্যাকাউন্ট যাচাই করা হয়েছে। এখানে আপনার ইউনিক প্রেডিকশন পাসওয়ার্ড:
+            </div>
+            
+            <div class="password-display" id="passwordDisplay">
+                ১৭৮৩
+            </div>
+            
+            <div class="prediction-text">
+                প্রিমিয়াম অ্যাভাটার প্রেডিকশন আনলক করতে এই পাসওয়ার্ড ব্যবহার করুন। প্রেডিকশন ড্যাশবোর্ড অ্যাক্সেস করতে নিচের বাটনে ক্লিক করুন।
+            </div>
+            
+            <button class="cta-button" id="accessPredictionsBtn">অ্যাভাটার প্রেডিকশন অ্যাক্সেস করুন</button>
+        </div>
+        
+        <div class="main-card" id="step3" style="display: none;">
+            <h2 class="card-title">প্রিমিয়াম অ্যাভাটার প্রেডিকশন</h2>
+            
+            <div class="signal-container" id="signalContainer">
+                <div class="prediction-text">
+                    আমাদের AI রিয়েল-টাইম গেম ডেটা বিশ্লেষণ করে আপনার জন্য সবচেয়ে সঠিক প্রেডিকশন তৈরি করছে...
+                </div>
+                
+                <div class="signal-card">
+                    <h3 class="signal-title">পরবর্তী জয়ী অ্যাভাটার প্রেডিকশন</h3>
+                    <div class="signal-value" id="avatarPrediction">লোড হচ্ছে...</div>
+                    <div class="timer">পরবর্তী আপডেট: <span id="countdown">৩০</span> সেকেন্ডে</div>
+                </div>
+                
+                <div class="prediction-text">
+                    <strong>কিভাবে ব্যবহার করবেন:</strong> সর্বাধিক জয়ের সম্ভাবনার জন্য পরবর্তী রাউন্ডে এই অ্যাভাটারে বেট করুন। আমাদের AI প্রতি ৩০ সেকেন্ডে প্রেডিকশন আপডেট করে।
+                </div>
+                
+                <div class="disclaimer">
+                    <strong>মনে রাখবেন:</strong> যদিও আমাদের প্রেডিকশন উচ্চ নির্ভুলতা সম্পন্ন, জুয়া খেলায় ঝুঁকি জড়িত। শুধুমাত্র সেই পরিমাণ বেট করুন যা আপনি হারাতে সক্ষম। আপনার ১৬০০ টাকা ডিপোজিট যেকোনো সময় উত্তোলন করতে পারেন।
+                </div>
+            </div>
+            
+            <div id="passwordPrompt" style="text-align: center;">
+                <h3>প্রেডিকশন পাসওয়ার্ড প্রবেশ করুন</h3>
+                <input type="password" id="passwordInput" placeholder="আপনার প্রেডিকশন পাসওয়ার্ড প্রবেশ করুন" style="padding: 10px; border-radius: 5px; border: none; margin: 10px 0; width: 200px; text-align: center;">
+                <button class="upload-btn" id="submitPasswordBtn" style="display: block; margin: 0 auto;">পাসওয়ার্ড সাবমিট করুন</button>
+                <p id="passwordError" style="color: #f44336; margin-top: 10px; display: none;">ভুল পাসওয়ার্ড। দয়া করে নিশ্চিত করুন যে আপনি সমস্ত ভেরিফিকেশন ধাপ সম্পন্ন করেছেন।</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© ২০২৩ 6Rwin Avatar Predictor | AI-পাওয়ার্ড প্রেডিকশন সিস্টেম</p>
+            <p>এই সার্ভিস 6Rwin এর সাথে অ্যাফিলিয়েটেড নয়। প্রেডিকশন শুধুমাত্র বিনোদনের উদ্দেশ্যে।</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Language switching functionality
+        const bnBtn = document.getElementById('bnBtn');
+        const enBtn = document.getElementById('enBtn');
+        
+        // English translations (initially hidden)
+        const englishContent = {
+            logo: "6Rwin Avatar Predictor",
+            tagline: "AI-Powered Prediction Technology for Maximum Wins",
+            premiumBadge: "PREMIUM",
+            cardTitle1: "Free Avatar Prediction",
+            aiBadge: "AI Verified",
+            predictionText1: "Our advanced <span class='highlight'>AI algorithm</span> analyzes thousands of data points to predict the next winning avatar with <span class='highlight'>92.7% accuracy</span>. Get your free prediction now!",
+            getPredictionBtn: "Get Free Avatar Prediction - Click Here",
+            disclaimer1: "<strong>Note:</strong> This is a premium prediction service. To ensure quality and prevent abuse, we require account verification. No payment is needed - your deposit remains yours and can be withdrawn at any time.",
+            cardTitle2: "Step 1: Account Verification",
+            step1Title: "Create Your 6Rwin Account",
+            step1Desc: "Click the button below to open 6Rwin official website and create your free account. This takes less than 2 minutes.",
+            openWebsiteBtn: "Open 6Rwin Website",
+            step2Title: "Deposit ₹1600 to Your Account",
+            step2Desc: "Deposit ₹1600 to your new 6Rwin account. This amount remains yours and can be withdrawn anytime. Watch the tutorial if you need help.",
+            watchTutorialBtn: "Watch Deposit Tutorial",
+            step3Title: "Upload Screenshot for Verification",
+            step3Desc: "Upload a screenshot showing your 6Rwin account with at least ₹1600 balance. Our AI will verify it instantly.",
+            screenshotPlaceholder: "Drag & Drop your screenshot here or click to select",
+            uploadBtn: "Upload Screenshot",
+            verificationSuccess: "✓ Verified by AI: Your account meets all requirements!",
+            cardTitle3: "Step 2: Get Your Prediction Password",
+            predictionText2: "Congratulations! Your account has been verified by our AI system. Here is your unique prediction password:",
+            predictionText3: "Use this password to unlock premium avatar predictions. Click the button below to access the prediction dashboard.",
+            accessPredictionsBtn: "Access Avatar Predictions",
+            cardTitle4: "Premium Avatar Predictions",
+            predictionText4: "Our AI is analyzing real-time game data to generate the most accurate prediction for you...",
+            signalTitle: "Next Winning Avatar Prediction",
+            timerText: "Next update in: <span id='countdown'>30</span> seconds",
+            predictionText5: "<strong>How to use:</strong> Place your bet on this avatar in the next round for maximum winning potential. Our AI updates predictions every 30 seconds.",
+            disclaimer2: "<strong>Remember:</strong> While our predictions have high accuracy, gambling involves risk. Only bet what you can afford to lose. Your ₹1600 deposit can be withdrawn anytime.",
+            passwordPromptTitle: "Enter Prediction Password",
+            passwordPlaceholder: "Enter your prediction password",
+            submitPasswordBtn: "Submit Password",
+            passwordError: "Incorrect password. Please make sure you've completed all verification steps.",
+            footer1: "© 2023 6Rwin Avatar Predictor | AI-Powered Prediction System",
+            footer2: "This service is not affiliated with 6Rwin. Predictions are for entertainment purposes only."
+        };
+        
+        // Bengali content (default)
+        const bengaliContent = {
+            logo: "6Rwin Avatar Predictor",
+            tagline: "ম্যাক্সিমাম জয়ের জন্য AI-পাওয়ার্ড প্রেডিকশন টেকনোলজি",
+            premiumBadge: "প্রিমিয়াম",
+            cardTitle1: "ফ্রি অ্যাভাটার প্রেডিকশন",
+            aiBadge: "AI ভেরিফাইড",
+            predictionText1: "আমাদের উন্নত <span class='highlight'>AI অ্যালগরিদম</span> হাজার হাজার ডেটা পয়েন্ট বিশ্লেষণ করে পরবর্তী জয়ী অ্যাভাটার <span class='highlight'>92.7% নির্ভুলতার</span> সাথে ভবিষ্যদ্বাণী করে। এখনই আপনার ফ্রি প্রেডিকশন পান!",
+            getPredictionBtn: "ফ্রি অ্যাভাটার প্রেডিকশন পেতে এখানে ক্লিক করুন",
+            disclaimer1: "<strong>নোট:</strong> এটি একটি প্রিমিয়াম প্রেডিকশন সার্ভিস। গুণমান নিশ্চিত করতে এবং অপব্যবহার রোধ করতে, আমরা অ্যাকাউন্ট ভেরিফিকেশন প্রয়োজন। কোন পেমেন্ট প্রয়োজন নেই - আপনার ডিপোজিট আপনারই থাকে এবং যেকোনো সময় উত্তোলন করতে পারেন।",
+            cardTitle2: "ধাপ ১: অ্যাকাউন্ট ভেরিফিকেশন",
+            step1Title: "আপনার 6Rwin অ্যাকাউন্ট তৈরি করুন",
+            step1Desc: "6Rwin অফিসিয়াল ওয়েবসাইট খুলতে নিচের বাটনে ক্লিক করুন এবং আপনার ফ্রি অ্যাকাউন্ট তৈরি করুন। এটি ২ মিনিটেরও কম সময় নেয়।",
+            openWebsiteBtn: "6Rwin ওয়েবসাইট খুলুন",
+            step2Title: "আপনার অ্যাকাউন্টে ১৬০০ টাকা ডিপোজিট করুন",
+            step2Desc: "আপনার নতুন 6Rwin অ্যাকাউন্টে ১৬০০ টাকা ডিপোজিট করুন। এই পরিমাণ আপনারই থাকে এবং যেকোনো সময় উত্তোলন করতে পারেন। সাহায্য প্রয়োজন হলে টিউটোরিয়ালটি দেখুন।",
+            watchTutorialBtn: "ডিপোজিট টিউটোরিয়াল দেখুন",
+            step3Title: "ভেরিফিকেশনের জন্য স্ক্রিনশট আপলোড করুন",
+            step3Desc: "6Rwin অ্যাকাউন্টের একটি স্ক্রিনশট আপলোড করুন যেখানে কমপক্ষে ১৬০০ টাকা ব্যালেন্স দেখাচ্ছে। আমাদের AI তাৎক্ষণিকভাবে যাচাই করবে।",
+            screenshotPlaceholder: "আপনার স্ক্রিনশট এখানে ড্র্যাগ অ্যান্ড ড্রপ করুন বা সিলেক্ট করতে ক্লিক করুন",
+            uploadBtn: "স্ক্রিনশট আপলোড করুন",
+            verificationSuccess: "✓ AI দ্বারা যাচাইকৃত: আপনার অ্যাকাউন্ট সমস্ত প্রয়োজনীয়তা পূরণ করেছে!",
+            cardTitle3: "ধাপ ২: আপনার প্রেডিকশন পাসওয়ার্ড পান",
+            predictionText2: "অভিনন্দন! আমাদের AI সিস্টেম দ্বারা আপনার অ্যাকাউন্ট যাচাই করা হয়েছে। এখানে আপনার ইউনিক প্রেডিকশন পাসওয়ার্ড:",
+            predictionText3: "প্রিমিয়াম অ্যাভাটার প্রেডিকশন আনলক করতে এই পাসওয়ার্ড ব্যবহার করুন। প্রেডিকশন ড্যাশবোর্ড অ্যাক্সেস করতে নিচের বাটনে ক্লিক করুন।",
+            accessPredictionsBtn: "অ্যাভাটার প্রেডিকশন অ্যাক্সেস করুন",
+            cardTitle4: "প্রিমিয়াম অ্যাভাটার প্রেডিকশন",
+            predictionText4: "আমাদের AI রিয়েল-টাইম গেম ডেটা বিশ্লেষণ করে আপনার জন্য সবচেয়ে সঠিক প্রেডিকশন তৈরি করছে...",
+            signalTitle: "পরবর্তী জয়ী অ্যাভাটার প্রেডিকশন",
+            timerText: "পরবর্তী আপডেট: <span id='countdown'>৩০</span> সেকেন্ডে",
+            predictionText5: "<strong>কিভাবে ব্যবহার করবেন:</strong> সর্বাধিক জয়ের সম্ভাবনার জন্য পরবর্তী রাউন্ডে এই অ্যাভাটারে বেট করুন। আমাদের AI প্রতি ৩০ সেকেন্ডে প্রেডিকশন আপডেট করে।",
+            disclaimer2: "<strong>মনে রাখবেন:</strong> যদিও আমাদের প্রেডিকশন উচ্চ নির্ভুলতা সম্পন্ন, জুয়া খেলায় ঝুঁকি জড়িত। শুধুমাত্র সেই পরিমাণ বেট করুন যা আপনি হারাতে সক্ষম। আপনার ১৬০০ টাকা ডিপোজিট যেকোনো সময় উত্তোলন করতে পারেন।",
+            passwordPromptTitle: "প্রেডিকশন পাসওয়ার্ড প্রবেশ করুন",
+            passwordPlaceholder: "আপনার প্রেডিকশন পাসওয়ার্ড প্রবেশ করুন",
+            submitPasswordBtn: "পাসওয়ার্ড সাবমিট করুন",
+            passwordError: "ভুল পাসওয়ার্ড। দয়া করে নিশ্চিত করুন যে আপনি সমস্ত ভেরিফিকেশন ধাপ সম্পন্ন করেছেন।",
+            footer1: "© ২০২৩ 6Rwin Avatar Predictor | AI-পাওয়ার্ড প্রেডিকশন সিস্টেম",
+            footer2: "এই সার্ভিস 6Rwin এর সাথে অ্যাফিলিয়েটেড নয়। প্রেডিকশন শুধুমাত্র বিনোদনের উদ্দেশ্যে।"
+        };
+        
+        function switchToEnglish() {
+            document.querySelector('html').lang = 'en';
+            bnBtn.classList.remove('active');
+            enBtn.classList.add('active');
+            
+            // Update all text elements to English
+            document.querySelector('.logo').textContent = englishContent.logo;
+            document.querySelector('.tagline').textContent = englishContent.tagline;
+            document.querySelector('.premium-badge').textContent = englishContent.premiumBadge;
+            document.querySelector('.main-card .card-title').innerHTML = englishContent.cardTitle1 + " <span class='ai-badge'>" + englishContent.aiBadge + "</span>";
+            document.querySelector('.main-card .prediction-text').innerHTML = englishContent.predictionText1;
+            document.getElementById('getPredictionBtn').textContent = englishContent.getPredictionBtn;
+            document.querySelector('.main-card .disclaimer').innerHTML = englishContent.disclaimer1;
+            
+            // Step 1 content
+            document.getElementById('step1').querySelector('.card-title').textContent = englishContent.cardTitle2;
+            document.querySelectorAll('.step-title')[0].textContent = englishContent.step1Title;
+            document.querySelectorAll('.step-description')[0].textContent = englishContent.step1Desc;
+            document.querySelectorAll('.cta-button')[1].textContent = englishContent.openWebsiteBtn;
+            document.querySelectorAll('.step-title')[1].textContent = englishContent.step2Title;
+            document.querySelectorAll('.step-description')[1].textContent = englishContent.step2Desc;
+            document.querySelectorAll('.cta-button')[2].textContent = englishContent.watchTutorialBtn;
+            document.querySelectorAll('.step-title')[2].textContent = englishContent.step3Title;
+            document.querySelectorAll('.step-description')[2].textContent = englishContent.step3Desc;
+            document.getElementById('screenshotPreview').textContent = englishContent.screenshotPlaceholder;
+            document.getElementById('uploadBtn').textContent = englishContent.uploadBtn;
+            
+            // Step 2 content
+            document.getElementById('step2').querySelector('.card-title').textContent = englishContent.cardTitle3;
+            document.querySelectorAll('#step2 .prediction-text')[0].innerHTML = englishContent.predictionText2;
+            document.querySelectorAll('#step2 .prediction-text')[1].innerHTML = englishContent.predictionText3;
+            document.getElementById('accessPredictionsBtn').textContent = englishContent.accessPredictionsBtn;
+            
+            // Step 3 content
+            document.getElementById('step3').querySelector('.card-title').textContent = englishContent.cardTitle4;
+            document.querySelector('#signalContainer .prediction-text').innerHTML = englishContent.predictionText4;
+            document.querySelector('.signal-title').textContent = englishContent.signalTitle;
+            document.querySelector('.timer').innerHTML = englishContent.timerText;
+            document.querySelectorAll('#signalContainer .prediction-text')[1].innerHTML = englishContent.predictionText5;
+            document.querySelector('#signalContainer .disclaimer').innerHTML = englishContent.disclaimer2;
+            document.querySelector('#passwordPrompt h3').textContent = englishContent.passwordPromptTitle;
+            document.getElementById('passwordInput').placeholder = englishContent.passwordPlaceholder;
+            document.getElementById('submitPasswordBtn').textContent = englishContent.submitPasswordBtn;
+            document.getElementById('passwordError').textContent = englishContent.passwordError;
+            
+            // Footer
+            document.querySelectorAll('footer p')[0].textContent = englishContent.footer1;
+            document.querySelectorAll('footer p')[1].textContent = englishContent.footer2;
+        }
+        
+        function switchToBengali() {
+            document.querySelector('html').lang = 'bn';
+            enBtn.classList.remove('active');
+            bnBtn.classList.add('active');
+            
+            // Update all text elements to Bengali
+            document.querySelector('.logo').textContent = bengaliContent.logo;
+            document.querySelector('.tagline').textContent = bengaliContent.tagline;
+            document.querySelector('.premium-badge').textContent = bengaliContent.premiumBadge;
+            document.querySelector('.main-card .card-title').innerHTML = bengaliContent.cardTitle1 + " <span class='ai-badge'>" + bengaliContent.aiBadge + "</span>";
+            document.querySelector('.main-card .prediction-text').innerHTML = bengaliContent.predictionText1;
+            document.getElementById('getPredictionBtn').textContent = bengaliContent.getPredictionBtn;
+            document.querySelector('.main-card .disclaimer').innerHTML = bengaliContent.disclaimer1;
+            
+            // Step 1 content
+            document.getElementById('step1').querySelector('.card-title').textContent = bengaliContent.cardTitle2;
+            document.querySelectorAll('.step-title')[0].textContent = bengaliContent.step1Title;
+            document.querySelectorAll('.step-description')[0].textContent = bengaliContent.step1Desc;
+            document.querySelectorAll('.cta-button')[1].textContent = bengaliContent.openWebsiteBtn;
+            document.querySelectorAll('.step-title')[1].textContent = bengaliContent.step2Title;
+            document.querySelectorAll('.step-description')[1].textContent = bengaliContent.step2Desc;
+            document.querySelectorAll('.cta-button')[2].textContent = bengaliContent.watchTutorialBtn;
+            document.querySelectorAll('.step-title')[2].textContent = bengaliContent.step3Title;
+            document.querySelectorAll('.step-description')[2].textContent = bengaliContent.step3Desc;
+            document.getElementById('screenshotPreview').textContent = bengaliContent.screenshotPlaceholder;
+            document.getElementById('uploadBtn').textContent = bengaliContent.uploadBtn;
+            
+            // Step 2 content
+            document.getElementById('step2').querySelector('.card-title').textContent = bengaliContent.cardTitle3;
+            document.querySelectorAll('#step2 .prediction-text')[0].innerHTML = bengaliContent.predictionText2;
+            document.querySelectorAll('#step2 .prediction-text')[1].innerHTML = bengaliContent.predictionText3;
+            document.getElementById('accessPredictionsBtn').textContent = bengaliContent.accessPredictionsBtn;
+            
+            // Step 3 content
+            document.getElementById('step3').querySelector('.card-title').textContent = bengaliContent.cardTitle4;
+            document.querySelector('#signalContainer .prediction-text').innerHTML = bengaliContent.predictionText4;
+            document.querySelector('.signal-title').textContent = bengaliContent.signalTitle;
+            document.querySelector('.timer').innerHTML = bengaliContent.timerText;
+            document.querySelectorAll('#signalContainer .prediction-text')[1].innerHTML = bengaliContent.predictionText5;
+            document.querySelector('#signalContainer .disclaimer').innerHTML = bengaliContent.disclaimer2;
+            document.querySelector('#passwordPrompt h3').textContent = bengaliContent.passwordPromptTitle;
+            document.getElementById('passwordInput').placeholder = bengaliContent.passwordPlaceholder;
+            document.getElementById('submitPasswordBtn').textContent = bengaliContent.submitPasswordBtn;
+            document.getElementById('passwordError').textContent = bengaliContent.passwordError;
+            
+            // Footer
+            document.querySelectorAll('footer p')[0].textContent = bengaliContent.footer1;
+            document.querySelectorAll('footer p')[1].textContent = bengaliContent.footer2;
+        }
+        
+        // Event listeners for language buttons
+        bnBtn.addEventListener('click', switchToBengali);
+        enBtn.addEventListener('click', switchToEnglish);
+        
+        // Simulate the prediction flow
+        document.getElementById('getPredictionBtn').addEventListener('click', function() {
+            document.querySelector('.main-card').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+        });
+        
+        // Handle screenshot upload
+        document.getElementById('uploadBtn').addEventListener('click', function() {
+            document.getElementById('screenshotUpload').click();
+        });
+        
+        document.getElementById('screenshotUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const screenshotPreview = document.getElementById('screenshotPreview');
+                    screenshotPreview.innerHTML = `<img src="${event.target.result}" style="max-width: 100%; max-height: 100%;">`;
+                    
+                    // Simulate AI verification
+                    setTimeout(function() {
+                        const verificationResult = document.getElementById('verificationResult');
+                        verificationResult.style.display = 'block';
+                        verificationResult.className = 'verification-result success';
+                        verificationResult.innerHTML = document.querySelector('html').lang === 'bn' ? 
+                            '✓ AI দ্বারা যাচাইকৃত: আপনার অ্যাকাউন্ট সমস্ত প্রয়োজনীয়তা পূরণ করেছে!' : 
+                            '✓ Verified by AI: Your account meets all requirements!';
+                        
+                        // Show next step
+                        setTimeout(function() {
+                            document.getElementById('step1').style.display = 'none';
+                            document.getElementById('step2').style.display = 'block';
+                            document.getElementById('passwordDisplay').style.display = 'block';
+                        }, 1500);
+                    }, 2000);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Access predictions
+        document.getElementById('accessPredictionsBtn').addEventListener('click', function() {
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'block';
+        });
+        
+        // Password submission
+        document.getElementById('submitPasswordBtn').addEventListener('click', function() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === '1783') {
+                document.getElementById('passwordPrompt').style.display = 'none';
+                document.getElementById('signalContainer').style.display = 'block';
+                startPredictionCycle();
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+            }
+        });
+        
+        // Simulate prediction updates
+        function startPredictionCycle() {
+            const avatars = document.querySelector('html').lang === 'bn' ? 
+                ['ড্রাগন', 'বাঘ', 'ফিনিক্স', 'কচ্ছপ', 'সিংহ', 'হাতি', 'ঈগল', 'নেকড়ে'] :
+                ['Dragon', 'Tiger', 'Phoenix', 'Turtle', 'Lion', 'Elephant', 'Eagle', 'Wolf'];
+            
+            const predictionElement = document.getElementById('avatarPrediction');
+            const countdownElement = document.getElementById('countdown');
+            
+            function updatePrediction() {
+                const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+                predictionElement.textContent = randomAvatar;
+                
+                let seconds = 30;
+                countdownElement.textContent = seconds;
+                
+                const countdown = setInterval(function() {
+                    seconds--;
+                    countdownElement.textContent = seconds;
+                    
+                    if (seconds <= 0) {
+                        clearInterval(countdown);
+                        updatePrediction();
+                    }
+                }, 1000);
+            }
+            
+            updatePrediction();
+        }
+        
+        // Drag and drop for screenshot
+        const screenshotPreview = document.getElementById('screenshotPreview');
+        
+        screenshotPreview.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        });
+        
+        screenshotPreview.addEventListener('dragleave', function() {
+            this.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+        });
+        
+        screenshotPreview.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.match('image.*')) {
+                const input = document.getElementById('screenshotUpload');
+                input.files = e.dataTransfer.files;
+                
+                // Trigger change event
+                const event = new Event('change');
+                input.dispatchEvent(event);
+            }
+        });
+        
+        screenshotPreview.addEventListener('click', function() {
+            document.getElementById('screenshotUpload').click();
+        });
+    </script>
+</body>
+</html>
